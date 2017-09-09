@@ -26,7 +26,7 @@ public class VersionTests
         set.Add(v3);
         Assert.AreEqual(1, set.Count);
 		v1 = Version.of(123456789U);
-		Assert.AreEqual(123456789U, v1.Write());
+        Assert.AreEqual(123456789U, v1.State);
     }
 
     [Test]

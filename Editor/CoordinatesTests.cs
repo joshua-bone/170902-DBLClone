@@ -7,7 +7,7 @@ public class CoordinatesTests
 	[Test]
 	public void testToString()
 	{
-		string s1 = "0000000000001" + "100001" + "0000000000111";
+		string s1 = "0000000000001" + "0000000100001" + "000111";
 		Coordinates Coordinates = Coordinates.of(Convert.ToUInt32(s1, 2));
 		Assert.AreEqual("1.33.7", Coordinates.ToString());
 	}
@@ -26,7 +26,7 @@ public class CoordinatesTests
 		set.Add(c3);
 		Assert.AreEqual(1, set.Count);
 		c1 = Coordinates.of(123456789U);
-		Assert.AreEqual(123456789U, c1.Write());
+        Assert.AreEqual(123456789U, c1.State);
 	}
 
 	[Test]
@@ -53,11 +53,11 @@ public class CoordinatesTests
 		Assert.Throws<ArgumentException>(() => Coordinates.of("8192.1.1"));
         Assert.DoesNotThrow(() => Coordinates.of("8191.1.1"));
 		Assert.Throws<ArgumentException>(() => Coordinates.of("-1.1.1"));
-		Assert.Throws<ArgumentException>(() => Coordinates.of("1.64.1"));
-        Assert.DoesNotThrow(() => Coordinates.of("1.63.1"));
+		Assert.Throws<ArgumentException>(() => Coordinates.of("1.8192.1"));
+        Assert.DoesNotThrow(() => Coordinates.of("1.8191.1"));
 		Assert.Throws<ArgumentException>(() => Coordinates.of("1.-1.1"));
-		Assert.Throws<ArgumentException>(() => Coordinates.of("1.1.8192"));
-        Assert.DoesNotThrow(() => Coordinates.of("1.1.8191"));
+		Assert.Throws<ArgumentException>(() => Coordinates.of("1.1.64"));
+        Assert.DoesNotThrow(() => Coordinates.of("1.1.63"));
 		Assert.Throws<ArgumentException>(() => Coordinates.of("1.1.-1"));
 	}
 }

@@ -26,7 +26,7 @@ public class CellTests
 		set.Add(c3);
 		Assert.AreEqual(1, set.Count);
 		c1 = Cell.of(123456789UL);
-		Assert.AreEqual(123456789UL, c1.Write());
+        Assert.AreEqual(123456789UL, c1.State);
 	}
 
 	[Test]

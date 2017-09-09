@@ -1,15 +1,16 @@
 ﻿using System;
+using System.IO;
 
 public class Version
 {
     public enum Field { Patch, Minor, Major }; //static by definition
     private static int[] WIDTHS = new int[] { 12, 10, 10 };
-    private uint state;
+    public uint State { get; private set; }
 
     //CONSTRUCTORS AND FACTORIES
     private Version(uint state)
     {
-        this.state = state;
+        this.State = state;
     }
 
     public static Version fresh()
@@ -29,13 +30,18 @@ public class Version
 
     public static Version copyOf(Version other)
     {
-        return new Version(other.Write());
+        return new Version(other.State);
     }
 
+	public static Version read(BinaryReader reader)
+	{
+		return Version.of(reader.ReadUInt32());
+	}
+
     //PUBLIC API
-    public uint Write()
+    public void Write(BinaryWriter writer)
     {
-        return this.state;
+        writer.Write(this.State);
     }
 
     public uint Major()
@@ -56,19 +62,19 @@ public class Version
     public void setMajor(int value)
     {
         ValidateInputSize(Field.Major, value);
-        state = BitUtils.setSlice(state, value, getOffsetOf(Field.Major), getWidthOf(Field.Major));
+        this.State = BitUtils.setSlice(this.State, value, getOffsetOf(Field.Major), getWidthOf(Field.Major));
     }
 
     public void setMinor(int value)
     {
 		ValidateInputSize(Field.Minor, value);
-		state = BitUtils.setSlice(state, value, getOffsetOf(Field.Minor), getWidthOf(Field.Minor));
+		this.State = BitUtils.setSlice(this.State, value, getOffsetOf(Field.Minor), getWidthOf(Field.Minor));
     }
 
     public void setPatch(int value)
     {
         ValidateInputSize(Field.Patch, value);
-		state = BitUtils.setSlice(state, value, getOffsetOf(Field.Patch), getWidthOf(Field.Patch));
+		this.State = BitUtils.setSlice(this.State, value, getOffsetOf(Field.Patch), getWidthOf(Field.Patch));
     }
 
     //OVERRIDE
@@ -87,7 +93,7 @@ public class Version
 
     public bool Equals(Version other)
     {
-        return state == other.Write();
+        return this.State == other.State;
     }
 
     public override int GetHashCode()
@@ -98,7 +104,7 @@ public class Version
     //PRIVATE
     private uint getSlice(Field field)
     {
-        return BitUtils.getSlice(this.state, getOffsetOf(field), WIDTHS[(int)field]);
+        return BitUtils.getSlice(this.State, getOffsetOf(field), WIDTHS[(int)field]);
     }
 
     private static int getWidthOf(Field field)
@@ -134,7 +140,7 @@ public class Version
         version.setMajor(parts[0]);
         version.setMinor(parts[1]);
         version.setPatch(parts[2]);
-        return version.Write();
+        return version.State;
     }
 
 	private static void ValidateInputSize(Field field, int value)
